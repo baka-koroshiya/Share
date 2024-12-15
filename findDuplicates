@@ -1,0 +1,51 @@
+<style>
+#table1{
+    border: 1px solid;
+	border-collapse: collapse;
+}
+</style>
+
+
+#set($projectId = "Sync")
+#set($jiraField = "jira")
+
+## Get - alle WorkItems mit Jira Key
+#set($renderWIs = $transaction.workItems().search().query("project.id:$projectId AND HAS_VALUE:$jiraField"))
+<table id="table1">
+    <tr id="table1">
+        <td id="table1">Item</td>
+        <td id="table1">duplicates</td>
+    </tr>
+
+#foreach($workItem in $renderWIs)
+    #if($workItem.fields.jira.render)
+		#set($renderDuplicates = $transaction.workItems().search().query("jira:$workItem.fields.jira.render AND NOT id:$workItem.render()"))
+        #if($renderDuplicates.size()  > 1 )
+            <tr id="table1">
+                    <td id="table1">$workItem.render.withTitle.withLinks()</td>
+                    <td id="table1">
+                        <table id="table1">
+                            <tr id="table1">
+                            	<td id="table1">key</td>
+                                <td id="table1">Item</td>
+                                <td id="table1">Status</td>
+                                <td id="table1">Jira key</td>
+                            <tr> 
+
+                        #foreach($dupes in $renderDuplicates)
+                            <tr id="table1">
+                                <td id="table1">$dupes.render.withTitle(false)</td>
+                                <td id="table1">$dupes.render.withTitle.withLinks</td>
+                                <td id="table1">$dupes.fields.status.render</td>
+                                <td id="table1">$dupes.fields.jira.render</td>
+                            </tr>
+                        #end
+                        </table>
+                </td>
+            <tr>
+        #end
+    #end    
+#end
+
+
+        
