@@ -19,7 +19,7 @@
 
 #foreach($workItem in $renderWIs)
     #if($workItem.fields.jira.render)
-		#set($renderDuplicates = $transaction.workItems().search().query("jira:$workItem.fields.jira.render AND NOT id:$workItem.render()"))
+		#set($renderDuplicates = $transaction.workItems().search().query("$jiraField:$workItem.fields.jira.render AND NOT id:$workItem.render()"))
         #if($renderDuplicates.size()  > 1 )
             <tr id="table1">
                     <td id="table1">$workItem.render.withTitle.withLinks()</td>
