@@ -8,6 +8,7 @@
 
 #set($projectId = "Sync")
 #set($jiraField = "jira")
+#set( $count = 0 )
 
 ## Get - alle WorkItems mit Jira Key
 #set($renderWIs = $transaction.workItems().search().query("project.id:$projectId AND HAS_VALUE:$jiraField"))
@@ -19,7 +20,7 @@
 
 #foreach($workItem in $renderWIs)
     #if($workItem.fields.jira.render)
-		#set($renderDuplicates = $transaction.workItems().search().query("$jiraField:$workItem.fields.jira.render AND NOT id:$workItem.render()"))
+		#set($renderDuplicates = $transaction.workItems().search().query("$jiraField:$workItem.fields.jira.render"))
         #if($renderDuplicates.size()  > 1 )
             <tr id="table1">
                     <td id="table1">$workItem.render.withTitle.withLinks()</td>
@@ -30,6 +31,7 @@
                                 <td id="table1">Item</td>
                                 <td id="table1">Status</td>
                                 <td id="table1">Jira key</td>
+                                <td id="table1">Created</td>
                             <tr> 
 
                         #foreach($dupes in $renderDuplicates)
@@ -38,14 +40,19 @@
                                 <td id="table1">$dupes.render.withTitle.withLinks</td>
                                 <td id="table1">$dupes.fields.status.render</td>
                                 <td id="table1">$dupes.fields.jira.render</td>
+                                <td id="table1">$dupes.fields.created.render</td>
                             </tr>
+
                         #end
                         </table>
                 </td>
             <tr>
+             #set( $count = $count + 1 )
         #end
     #end    
+
+
 #end
 
-
+gefundende Duplikate: $count
         
